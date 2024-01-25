@@ -10,7 +10,7 @@ import os
 
 # Define helper functions
 def get_names(path):
-    name = path.split(os.sep)[-1].split('.')[0]
+    name = path.split(os.sep)[-1].split('.')[0] #path string is spilt into list which is further spilt into name
     name = string.capwords(name.replace("_", " "))
     return name
 
@@ -21,7 +21,7 @@ def get_images(path):
 
 def get_EAR_ratio(eye_points):
     # euclidean distance between two vertical eye landmarks
-    A = dist.euclidean(eye_points[1], eye_points[5])
+    A = dist.euclidean(eye_points[1], eye_points[5]) #https://cdn-images-1.medium.com/v2/resize:fit:1600/1*AbEg31EgkbXSQehuNJBlWg.png
     B = dist.euclidean(eye_points[2], eye_points[4])
 
     # euclidean distance between horizontal eye landmarks
@@ -33,9 +33,9 @@ def get_EAR_ratio(eye_points):
 def check_is_name_recorded(name):
     with open(const.CSV_FILE_PATH, 'r+') as file:
         # Read lines in csv file, except first line
-        lines_in_file = file.read().splitlines()[1:]
+        lines_in_file = file.read().splitlines()[1:] #Read all lines except 'Name'
         # Store only names
-        names_in_file = list(map(lambda line : line.split(',')[0], lines_in_file))
+        names_in_file = list(map(lambda line : line.split(',')[0], lines_in_file)) 
 
         if name in names_in_file:
             return True
@@ -63,14 +63,16 @@ def record_attendence(frame_current_name):
             print(text_display)
 
             if const.text_to_speech:
-                pool = Pool(processes=1) # Start a worker processes
-                result = pool.apply_async(text_to_speech, [text_display])
+                # pool = Pool(processes=1) # Start a worker processes
+                # result = pool.apply_async(text_to_speech, [text_display])
+                text_to_speech(frame_current_name+', your attendence is recorded')
 
 def text_to_speech(text):
     # Text to Sppech
     gtts_obj = gTTS(text=text, lang='en', slow=False)
-    gtts_obj.save('assets/text_to_speech/text_to_speech.mp3')
+    gtts_obj.save('assets//text_to_speech//text_to_speech.mp3')
+    os.system('assets\\text_to_speech\\text_to_speech.mp3')
 
-    mixer.init()
-    mixer.music.load('assets/text_to_speech/text_to_speech.mp3')
-    mixer.music.play()
+    # mixer.init()
+    # mixer.music.load('assets/text_to_speech/text_to_speech.mp3')
+    # mixer.music.play()

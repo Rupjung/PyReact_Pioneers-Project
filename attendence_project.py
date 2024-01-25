@@ -11,17 +11,17 @@ print('-----------------------------------------------------\n')
 
 # Load data from pickle file (n_people)
 with open('assets/pickles/n_people.pk', 'rb') as pickle_file:
-    n_people_in_pickle = pickle.load(pickle_file)
+    n_people_in_pickle = pickle.load(pickle_file) 
 print(f"Number of files that should be in '{const.PEOPLE_DIR}' directory : {n_people_in_pickle}")
 
-# Read all images
-people = glob(const.PEOPLE_DIR + '/*.*')
+# Read all images 
+people = glob(const.PEOPLE_DIR + '/*.*') #list of all image files
 print(f"Number of files in '{const.PEOPLE_DIR}' directory : {len(people)}")
 
 # Check if number of files in PEOPLE_DIR is same as value in pickle file
 if n_people_in_pickle == len(people):
-    # Get names
-    names = list(map(utility.get_names, people))
+    #Get people name from people direcctory
+    names = list(map(utility.get_names, people)) 
 
     # Get encodings
     face_encode = np.load('assets/face_encodings/data.npy')
@@ -46,12 +46,13 @@ if n_people_in_pickle == len(people):
         frame_face_landmarks = fr.face_landmarks(frame, frame_face_loc)
         frame_face_encode = fr.face_encodings(frame, frame_face_loc)
 
-        # Iterate through locations, landmarks and encodings
+        # Iterate through locations, landmarks and encodings 
+        #One frame may contain more than one faces
         for index, (loc, encode, landmark) in enumerate(zip(frame_face_loc, frame_face_encode, frame_face_landmarks)):
 
             # Find index match
             # is_face_same = fr.compare_faces(face_encode, encode)
-            score = fr.face_distance(face_encode, encode)
+            score = fr.face_distance(face_encode, encode) #get np array of euclidean distances
             index_match = np.argmin(score)
 
             # Check if min(score) is < face_recognition_threshold
@@ -84,8 +85,8 @@ if n_people_in_pickle == len(people):
                     # Reset eye blink counter
                     eye_blink_counter = 0
 
-                # If temp_name doesn't matches with frame_current_name, reset eye_blink_total and set new random_blink_number
-                if temp_name != frame_current_name:
+                # If temp_name doesn't matches with frame_current_name (Different face appear in the next frame), reset eye_blink_total and set new random_blink_number
+                if temp_name != frame_current_name: 
                     eye_blink_total = 0
                     random_blink_number = random.randint(const.n_min_eye_blink,const.n_max_eye_blink)
 
@@ -121,7 +122,7 @@ if n_people_in_pickle == len(people):
                 face_box_color = const.unknown_face_box_color
 
             # Draw Reactangle around faces with their names
-            cv2.rectangle(frame,(loc[3],loc[0]),(loc[1],loc[2]),face_box_color,2) # top-right, bottom-left
+            cv2.rectangle(frame,(loc[3],loc[0]),(loc[1],loc[2]),face_box_color,2) # top-left, bottom-right
             cv2.putText(frame,frame_current_name,(loc[3],loc[0]-3),cv2.FONT_HERSHEY_PLAIN,2,const.text_in_frame_color,2)
 
         # Display frame
