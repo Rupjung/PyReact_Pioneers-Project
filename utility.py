@@ -2,11 +2,13 @@ import cv2
 import string
 from datetime import datetime
 from gtts import gTTS
+from io import BytesIO
 from pygame import mixer
 from multiprocessing import Pool
 from scipy.spatial import distance as dist
 import define_constants as const
 import os
+import text_to_speech as tts
 
 # Define helper functions
 def get_names(path):
@@ -65,14 +67,6 @@ def record_attendence(frame_current_name):
             if const.text_to_speech:
                 # pool = Pool(processes=1) # Start a worker processes
                 # result = pool.apply_async(text_to_speech, [text_display])
-                text_to_speech(frame_current_name+', your attendence is recorded')
+                tts.play_sound(frame_current_name)
 
-def text_to_speech(text):
-    # Text to Sppech
-    gtts_obj = gTTS(text=text, lang='en', slow=False)
-    gtts_obj.save('assets//text_to_speech//text_to_speech.mp3')
-    os.system('assets\\text_to_speech\\text_to_speech.mp3')
 
-    # mixer.init()
-    # mixer.music.load('assets/text_to_speech/text_to_speech.mp3')
-    # mixer.music.play()
