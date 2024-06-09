@@ -6,6 +6,9 @@ import pickle
 import utility
 import random
 import define_constants as const
+import searching_details as s
+import database as db
+from datetime import datetime
 
 print('-----------------------------------------------------\n')
 
@@ -74,7 +77,8 @@ if n_people_in_pickle == len(people):
                 # EAR_right = get_EAR_ratio(right_eye)
                 EAR_avg = ( utility.get_EAR_ratio(left_eye_points) + utility.get_EAR_ratio(right_eye_points) ) / 2
 
-                # Check if EAR ratio is less than threshold
+                cv2.putText(frame, str(EAR_avg), (100,100), cv2.FONT_HERSHEY_PLAIN,2,const.text_in_frame_color,2)
+                # .imshowCheck if EAR ratio is less than threshold
                 if EAR_avg < const.EAR_ratio_threshold:
                     eye_blink_counter += 1
                 else:
@@ -106,6 +110,13 @@ if n_people_in_pickle == len(people):
                     # Record Attendence only if score is atmost 0.6
                     if np.min(score) < const.face_recognition_threshold:
                         utility.record_attendence(frame_current_name)
+                        classroom, rollno = s.get_student_classroom_rollno(str(frame_current_name))
+                        now = datetime.now()
+                        current_time = now.strftime("%H:%M:%S")
+                        current_year = now.strftime("%Y")
+                        current_month = now.strftime("%B")
+                        current_day_of_month = now.strftime("%d")
+                        db.registering_attendance(rollno, classroom, str(current_year+'-'+current_month+'-'+current_day_of_month), str(current_time), 'Present')
                         face_box_color = const.success_face_box_color # Set face box color to green for one frame
                         # Reset random_blink_number, and eye blink constants
                         random_blink_number = random.randint(const.n_min_eye_blink,const.n_max_eye_blink)
@@ -117,6 +128,7 @@ if n_people_in_pickle == len(people):
                 cv2.polylines(frame, [right_eye_points], True, const.eye_color , 1)
                 cv2.putText(frame,blink_message,(10,50),cv2.FONT_HERSHEY_PLAIN,1.5,const.text_in_frame_color,2)
                 cv2.putText(frame,attendence_message,(20,450),cv2.FONT_HERSHEY_PLAIN,2,const.text_in_frame_color,2)
+                
             else:
                 # Set face_box_color for unknown face
                 face_box_color = const.unknown_face_box_color

@@ -21,4 +21,4 @@ n_min_eye_blink = 2
 n_max_eye_blink = 5
 eye_color = (255, 0, 0)
 EAR_ratio_threshold = 0.2 # (EAR - Eye Aspect Ratio) #The more it is the wider is the eye when opened
-min_frames_eyes_closed = 3
+min_frames_eyes_closed = 1

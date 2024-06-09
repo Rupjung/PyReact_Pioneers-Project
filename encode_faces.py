@@ -37,4 +37,4 @@ if is_face_found:
     # Saving pickle file for number of files
     with open('assets/pickles/n_people.pk', 'wb') as pickle_file:
         pickle.dump(len(people), pickle_file)
-    print('Pickle file saved...')
+    print('Pickle file saved...')   
